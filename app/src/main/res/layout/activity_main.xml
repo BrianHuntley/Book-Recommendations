@@ -14,6 +14,22 @@
         android:textSize="35sp"
         android:layout_centerInParent="true"/>
 
+    <EditText
+        android:id="@+id/edtISBN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:width="250dp"
+        android:hint="Enter ISBN manually"/>
+
+    <Button
+        android:id="@+id/btnSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="send"
+        android:onClick="btnSend"/>
+
     <Button
         android:id="@+id/btnScan"
         android:layout_width="wrap_content"
@@ -25,5 +41,7 @@
         android:layout_marginBottom="50dp"
         app:icon="@drawable/ic_scan"
         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"/>
+
+
 
 </RelativeLayout>

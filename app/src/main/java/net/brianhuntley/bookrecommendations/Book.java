@@ -44,4 +44,14 @@ public class Book {
     public void setImg(String img) {
         this.img = img;
     }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "isbn='" + isbn + '\'' +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", img='" + img + '\'' +
+                '}';
+    }
 }
