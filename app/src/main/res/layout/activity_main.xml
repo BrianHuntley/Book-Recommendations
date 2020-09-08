@@ -18,28 +18,30 @@
         android:id="@+id/txtOr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="or"
+        android:text="@string/or"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/edtISBN"
-        android:textSize="20dp"/>
+        android:textSize="20sp"/>
 
     <EditText
         android:id="@+id/edtISBN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="250dp"
-        android:hint="Enter ISBN manually"
-        android:layout_below="@id/txtISBN"/>
+        android:hint="@string/enter_isbn_manually"
+        android:layout_below="@id/txtISBN"
+        android:inputType="number"
+        android:importantForAutofill="no" />
 
     <Button
         android:id="@+id/btnSend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="enter"
+        android:text="@string/enter"
         android:onClick="btnSend"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/txtISBN"
-        android:layout_toRightOf="@id/edtISBN" />
+        android:layout_toEndOf="@id/edtISBN" />
 
     <Button
         android:id="@+id/btnScan"

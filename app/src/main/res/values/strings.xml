@@ -2,4 +2,7 @@
     <string name="app_name">Book Recommendations</string>
     <string name="scan">Scan</string>
     <string name="result">Result:</string>
+    <string name="or">or</string>
+    <string name="enter_isbn_manually">Enter ISBN manually</string>
+    <string name="enter">enter</string>
 </resources>
