@@ -28,15 +28,61 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-
-//TODO organize this whole thing
 public class MainActivity extends AppCompatActivity {
 
     private TextView txtISBN;
     private RequestQueue queue;
     private ArrayList<Book> books;
 
-    private void jsonParse(String url){
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        txtISBN = findViewById(R.id.txtISBN);
+        queue = Volley.newRequestQueue(this);
+        books = new ArrayList<>();
+
+        //Get permission to use camera
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PackageManager.PERMISSION_GRANTED);
+    }
+
+    //Starts scan search
+    public void btnScan(View view) {
+        IntentIntegrator intentIntegrator = new IntentIntegrator(this);
+        intentIntegrator.setBeepEnabled(false);
+        intentIntegrator.setOrientationLocked(false);
+        intentIntegrator.initiateScan();
+    }
+
+    //Sends manual search
+    public void btnSend(View view) {
+        EditText edtISBN = findViewById(R.id.edtISBN);
+        String isbn = edtISBN.getText().toString();
+        Uri uri = Uri.parse("https://www.googleapis.com/books/v1/volumes?q=" + isbn);
+        jsonParse(uri.toString());
+    }
+
+    //Barcode scanner
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+
+        if (intentResult != null) {
+            if (intentResult.getContents() == null) {
+                txtISBN.setText("Scan failed");
+            } else {
+                String isbn = intentResult.getContents();
+                Uri uri = Uri.parse("https://www.googleapis.com/books/v1/volumes?q=" + isbn);
+                jsonParse(uri.toString());
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    //google books api
+    private void jsonParse(String url) {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -44,24 +90,23 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONArray jsonArray = response.getJSONArray("items");
 
-                            for(int i = 0; i < 1; ++i){//TODO don't recommend the book they search, recommend books after this. i < 1 for test purposes
+                            for (int i = 0; i < 1; ++i) {//TODO don't recommend the book they search, recommend books after this. i < 1 for test purposes
                                 JSONObject item = jsonArray.getJSONObject(i);
                                 JSONObject volumeInfo = item.getJSONObject("volumeInfo");
 
                                 try {
                                     JSONArray industryIdentifiers = volumeInfo.getJSONArray("industryIdentifiers");
-                                    JSONObject isbn13 = industryIdentifiers.getJSONObject(0);
+                                    JSONObject isbn13 = industryIdentifiers.getJSONObject(0);//TODO sometimes gets isbn10 instead of isbn13?
                                     String isbn = isbn13.getString("identifier");
                                     String title = volumeInfo.getString("title");
                                     JSONArray authors = volumeInfo.getJSONArray("authors");
                                     String author = authors.getString(0);//TODO if there are multiple authors get all of them
                                     JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
                                     String img = imageLinks.getString("thumbnail");
-                                    txtISBN.setText(title);
-                                    //TODO this is broken
-                                    //books.add(new Book(isbn, title, author, img));
+                                    books.add(new Book(isbn, title, author, img));
+                                    txtISBN.setText(books.get(0).toString());
 
-                                }catch (JSONException e){
+                                } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -76,52 +121,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         queue.add(request);
-    }
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        txtISBN = findViewById(R.id.txtISBN);
-        queue = Volley.newRequestQueue(this);
-
-        //Get permission to use camera
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CAMERA}, PackageManager.PERMISSION_GRANTED);
-    }
-
-    public void btnScan(View view){
-        IntentIntegrator intentIntegrator = new IntentIntegrator(this);
-        intentIntegrator.setBeepEnabled(false);
-        intentIntegrator.setOrientationLocked(false);
-        intentIntegrator.initiateScan();
-    }
-
-    public void btnSend(View view){
-        EditText edtISBN = findViewById(R.id.edtISBN);
-        String isbn = edtISBN.getText().toString();
-        Uri uri = Uri.parse("https://www.googleapis.com/books/v1/volumes?q=" + isbn);
-        jsonParse(uri.toString());
-        //System.out.println(books.get(0).toString());
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
-        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-
-        if(intentResult != null){
-            if(intentResult.getContents() == null){
-                txtISBN.setText("Scan failed");
-            }else{
-                String isbn = intentResult.getContents();
-                Uri uri = Uri.parse("https://www.googleapis.com/books/v1/volumes?q=" + isbn);
-                jsonParse(uri.toString());
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
 }

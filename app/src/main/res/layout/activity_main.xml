@@ -12,23 +12,34 @@
         android:layout_height="wrap_content"
         android:text="@string/result"
         android:textSize="35sp"
-        android:layout_centerInParent="true"/>
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/txtOr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="or"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/edtISBN"
+        android:textSize="20dp"/>
 
     <EditText
         android:id="@+id/edtISBN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
         android:width="250dp"
-        android:hint="Enter ISBN manually"/>
+        android:hint="Enter ISBN manually"
+        android:layout_below="@id/txtISBN"/>
 
     <Button
         android:id="@+id/btnSend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="send"
-        android:onClick="btnSend"/>
+        android:text="enter"
+        android:onClick="btnSend"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/txtISBN"
+        android:layout_toRightOf="@id/edtISBN" />
 
     <Button
         android:id="@+id/btnScan"
@@ -37,8 +48,7 @@
         android:text="@string/scan"
         android:onClick="btnScan"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
+        android:layout_below="@id/txtOr"
         app:icon="@drawable/ic_scan"
         style="@style/Widget.MaterialComponents.Button.TextButton.Icon"/>
 
