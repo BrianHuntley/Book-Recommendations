@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +32,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView txtISBN;
+    private TextView txtBookInfo;
+    private ImageView imgBook;
     private RequestQueue queue;
     private ArrayList<Book> books;
 
@@ -39,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        txtISBN = findViewById(R.id.txtISBN);
+        txtBookInfo = findViewById(R.id.txtBookInfo);
+        imgBook = findViewById(R.id.imgBook);
         queue = Volley.newRequestQueue(this);
         books = new ArrayList<>();
 
@@ -71,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (intentResult != null) {
             if (intentResult.getContents() == null) {
-                txtISBN.setText("Scan failed");
+                txtBookInfo.setText("Scan failed");
             } else {
                 String isbn = intentResult.getContents();
                 Uri uri = Uri.parse("https://www.googleapis.com/books/v1/volumes?q=" + isbn);
@@ -104,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                                     JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
                                     String img = imageLinks.getString("thumbnail");
                                     books.add(new Book(isbn, title, author, img));
-                                    txtISBN.setText(books.get(0).toString());
+                                    displayBook();
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -123,4 +127,8 @@ public class MainActivity extends AppCompatActivity {
         queue.add(request);
     }
 
+    private void displayBook(){
+        txtBookInfo.setText(books.get(0).toString());
+        Picasso.get().load(books.get(0).getImg()).into(imgBook);//TODO only takes https links, make sure Books only hold https links
+    }
 }

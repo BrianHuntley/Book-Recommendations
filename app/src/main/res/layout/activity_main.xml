@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/txtISBN"
+        android:id="@+id/txtBookInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/result"
@@ -19,9 +19,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/or"
+        android:textSize="20sp"
+        android:layout_above="@id/btnScan"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/edtISBN"
-        android:textSize="20sp"/>
+        android:layout_marginBottom="10dp"/>
+
 
     <EditText
         android:id="@+id/edtISBN"
@@ -29,9 +31,10 @@
         android:layout_height="wrap_content"
         android:width="250dp"
         android:hint="@string/enter_isbn_manually"
-        android:layout_below="@id/txtISBN"
+        android:importantForAutofill="no"
         android:inputType="number"
-        android:importantForAutofill="no" />
+        android:layout_above="@+id/txtOr"
+        android:layout_marginBottom="10dp"/>
 
     <Button
         android:id="@+id/btnSend"
@@ -40,8 +43,10 @@
         android:text="@string/enter"
         android:onClick="btnSend"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/txtISBN"
-        android:layout_toEndOf="@id/edtISBN" />
+        android:layout_toRightOf="@id/edtISBN"
+        android:layout_above="@id/txtOr"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"/>
 
     <Button
         android:id="@+id/btnScan"
@@ -49,10 +54,16 @@
         android:layout_height="wrap_content"
         android:text="@string/scan"
         android:onClick="btnScan"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/txtOr"
         app:icon="@drawable/ic_scan"
-        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"/>
+        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imgBook"/>
 
 
 
