@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Book Recommendations</string>
+    <string name="app_name">Book Recommender</string>
     <string name="scan">Scan</string>
     <string name="result">Result:</string>
     <string name="or">or</string>

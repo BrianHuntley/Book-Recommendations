@@ -1,13 +1,16 @@
 package net.brianhuntley.bookrecommendations;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -33,7 +36,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private TextView txtBookInfo;
-    private ImageView imgBook;
+    private LinearLayout vertLayout;
     private RequestQueue queue;
     private ArrayList<Book> books;
 
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         txtBookInfo = findViewById(R.id.txtBookInfo);
-        imgBook = findViewById(R.id.imgBook);
+        vertLayout = findViewById(R.id.vertLayout);
         queue = Volley.newRequestQueue(this);
         books = new ArrayList<>();
 
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Sends manual search
     public void btnSend(View view) {
+        txtBookInfo.setText("Result:");
         EditText edtISBN = findViewById(R.id.edtISBN);
         String isbn = edtISBN.getText().toString();
         Uri uri = Uri.parse("https://www.googleapis.com/books/v1/volumes?q=" + isbn);
@@ -75,8 +79,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (intentResult != null) {
             if (intentResult.getContents() == null) {
-                txtBookInfo.setText("Scan failed");
+                txtBookInfo.setText("Scan failed, try again or enter manually");
             } else {
+                txtBookInfo.setText("Result:");
                 String isbn = intentResult.getContents();
                 Uri uri = Uri.parse("https://www.googleapis.com/books/v1/volumes?q=" + isbn);
                 jsonParse(uri.toString());
@@ -87,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
     //google books api
     private void jsonParse(String url) {
+        books.clear();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -94,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONArray jsonArray = response.getJSONArray("items");
 
-                            for (int i = 0; i < 1; ++i) {//TODO don't recommend the book they search, recommend books after this. i < 1 for test purposes
+                            for (int i = 0; i < 10; ++i) {
                                 JSONObject item = jsonArray.getJSONObject(i);
                                 JSONObject volumeInfo = item.getJSONObject("volumeInfo");
 
@@ -108,12 +114,13 @@ public class MainActivity extends AppCompatActivity {
                                     JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
                                     String img = imageLinks.getString("thumbnail");
                                     books.add(new Book(isbn, title, author, img));
-                                    displayBook();
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
+                            displayBook();
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -128,7 +135,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayBook(){
-        txtBookInfo.setText(books.get(0).toString());
-        Picasso.get().load(books.get(0).getImg()).into(imgBook);//TODO only takes https links, make sure Books only hold https links
+        for(int i = 0; i < books.size(); ++i){
+            //make layout
+            LinearLayout horzLayout = new LinearLayout(this);
+            horzLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            horzLayout.setOrientation(LinearLayout.HORIZONTAL);
+            vertLayout.addView(horzLayout);
+            //book info
+            TextView title = new TextView(this);
+            title.setText(books.get(i).toString());
+            title.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+            title.setTextSize(20.0f);
+            horzLayout.addView(title);
+            //picture
+            ImageView picture = new ImageView(this);
+            picture.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT));
+            picture.setPadding(20,10,20, 10);
+            horzLayout.addView(picture);
+            Picasso.get().load(books.get(i).getImg()).into(picture);
+        }
+
     }
 }

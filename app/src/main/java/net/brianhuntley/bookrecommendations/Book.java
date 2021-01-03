@@ -10,7 +10,7 @@ public class Book {
         this.isbn = isbn;
         this.title = title;
         this.author = author;
-        this.img = img;
+        this.img = img.replace("http:", "https:");
     }
 
     public String getIsbn() {
@@ -42,7 +42,7 @@ public class Book {
     }
 
     public void setImg(String img) {
-        this.img = img;
+        this.img = img.replace("http:", "https:");
     }
 
     @Override
